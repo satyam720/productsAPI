@@ -1,0 +1,26 @@
+{
+  "name": "productsapi",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/satyam720/productsAPI.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/satyam720/productsAPI/issues"
+  },
+  "homepage": "https://github.com/satyam720/productsAPI#readme",
+  "description": "",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mongodb": "^7.2.0",
+    "mongoose": "^9.6.3",
+    "morgan": "^1.10.1"
+  }
+}
