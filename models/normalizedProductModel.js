@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import Category from "./categoryModel.js";
+import SubCategory from "./subCategoryModel.js";
 
 
 
@@ -17,26 +19,45 @@ const productSchema = mongoose.Schema({
       "SKU must start with 'commerce_product' followed by numeric characters",
     ],
   },
-  category: {
-    type: String,
+  category: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Category',
     required: true,
-    enum: [
-      "electronics",
-      "clothing",
-      "books",
-      "home_appliances",
-      "sports",
-      "beauty",
-      "food",
-    ],
-    message: "Please select a valid category",
-  },
-  subCategory: {
-    type: String,
+  }],
+  subCategory: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'SubCategory',
     required: true,
-    validate: function(elem) {
-        const allowed = categoryMap[this.category];
-        return allowed && allowed.includes(elem);
-    }
-  },
+    
+  }],
+  price: {
+    type: Number,
+    required: true,
+  }
 });
+
+productSchema.pre('validate', async function() {
+  let subCatIds = this.subCategory;
+  let catIds = this.category;
+  
+  const subCategory = await SubCategory.find({
+    _id: {$in: subCatIds}
+  })
+
+  const categorySet = new Set(catIds.map(id => id.toString()));
+  console.log(categorySet);
+  for(const sub of subCategory){
+    const isValid = sub.parents.some(id => categorySet.has(id.toString()));
+
+    if (!isValid) {
+      throw new Error(
+        `${sub.name} does not belong to selected categories`
+      );
+    }
+  }
+
+});
+
+const Product = mongoose.model('Product', productSchema);
+
+export default Product;
